@@ -1,0 +1,29 @@
+# Core dependencies
+gradio>=4.0.0
+python-dotenv>=1.0.0
+
+# Document processing
+PyPDF2>=3.0.0
+pymupdf>=1.23.0
+pillow>=10.0.0
+pytesseract>=0.3.10
+
+# ML and embeddings
+sentence-transformers>=2.2.0
+torch>=2.0.0
+transformers>=4.30.0
+
+# Vector database
+pinecone-client>=3.0.0
+
+# LangChain ecosystem
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-groq>=0.1.0
+langchain-pinecone>=0.1.0
+langchain-core>=0.1.0
+langchain-huggingface>=0.1.0
+
+# Additional utilities
+numpy>=1.24.0
+pandas>=2.0.0
