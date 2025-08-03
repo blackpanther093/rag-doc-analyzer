@@ -2,8 +2,10 @@ import uuid
 import os
 from setup_api import APIKeyManager, logger
 from vectorstore import VectorStore
-# from qa_chain import QAChain
-from decision_chain import DecisionChain
+from qa_chain import QAChain
+from cache_manager import CacheManager
+from security_manager import SecurityManager
+
 # -----------------------------
 # Application State
 # -----------------------------
@@ -15,13 +17,17 @@ class AppState:
         self.config = None
         self.vector_store = None
         self.qa_chain = None
+        self.cache_manager = None
+        self.security_manager = None
     
     def initialize(self):
         """Initialize application components"""
         try:
             self.config = APIKeyManager.load_and_validate()
             self.vector_store = VectorStore(self.config)
-            self.qa_chain = DecisionChain(self.config)
+            self.qa_chain = QAChain(self.config)
+            self.cache_manager = CacheManager()
+            self.security_manager = SecurityManager()
             logger.info(f"Application initialized with session ID: {self.session_id}")
             return True
         except Exception as e:

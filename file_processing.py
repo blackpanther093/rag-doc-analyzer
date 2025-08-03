@@ -38,6 +38,10 @@ class FileProcessor:
                     content = FileProcessor._extract_pdf(file_obj)
                 elif file_extension == 'txt':
                     content = FileProcessor._extract_text_file(file_obj)
+                elif file_extension in ['docx', 'doc']:
+                    content = FileProcessor._extract_word_document(file_obj, file_extension)
+                elif file_extension in ['eml', 'msg']:
+                    content = FileProcessor._extract_email(file_obj, file_extension)
                 elif file_extension in ['png', 'jpg', 'jpeg'] and use_ocr:
                     content = FileProcessor._extract_image_ocr(file_obj)
                 elif file_extension in ['png', 'jpg', 'jpeg'] and not use_ocr:
@@ -104,6 +108,174 @@ class FileProcessor:
             
         except Exception as e:
             logger.error(f"PDF extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_word_document(file_obj: Any, file_extension: str) -> str:
+        """Extract text from Word documents (.docx and .doc)"""
+        try:
+            if file_extension == 'docx':
+                return FileProcessor._extract_docx(file_obj)
+            elif file_extension == 'doc':
+                return FileProcessor._extract_doc(file_obj)
+            else:
+                logger.error(f"Unsupported Word document format: {file_extension}")
+                return ""
+                
+        except Exception as e:
+            logger.error(f"Word document extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_docx(file_obj: Any) -> str:
+        """Extract text from .docx files using python-docx"""
+        try:
+            from docx import Document
+            
+            if hasattr(file_obj, 'read'):
+                file_obj.seek(0)
+            
+            doc = Document(file_obj)
+            texts = []
+            
+            # Extract text from paragraphs
+            for paragraph in doc.paragraphs:
+                if paragraph.text.strip():
+                    texts.append(paragraph.text)
+            
+            # Extract text from tables
+            for table in doc.tables:
+                for row in table.rows:
+                    row_texts = []
+                    for cell in row.cells:
+                        if cell.text.strip():
+                            row_texts.append(cell.text.strip())
+                    if row_texts:
+                        texts.append(" | ".join(row_texts))
+            
+            return "\n".join(texts)
+            
+        except ImportError:
+            logger.error("python-docx not installed. Please install it: pip install python-docx")
+            return ""
+        except Exception as e:
+            logger.error(f"DOCX extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_doc(file_obj: Any) -> str:
+        """Extract text from .doc files using python-docx2txt"""
+        try:
+            import docx2txt
+            
+            if hasattr(file_obj, 'read'):
+                file_obj.seek(0)
+            
+            # docx2txt can handle both .doc and .docx files
+            text = docx2txt.process(file_obj)
+            return text
+            
+        except ImportError:
+            logger.error("docx2txt not installed. Please install it: pip install docx2txt")
+            return ""
+        except Exception as e:
+            logger.error(f"DOC extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_email(file_obj: Any, file_extension: str) -> str:
+        """Extract text from email files (.eml, .msg)"""
+        try:
+            if file_extension == 'eml':
+                return FileProcessor._extract_eml(file_obj)
+            elif file_extension == 'msg':
+                return FileProcessor._extract_msg(file_obj)
+            else:
+                logger.error(f"Unsupported email format: {file_extension}")
+                return ""
+                
+        except Exception as e:
+            logger.error(f"Email extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_eml(file_obj: Any) -> str:
+        """Extract text from .eml files"""
+        try:
+            import email
+            from email import policy
+            from bs4 import BeautifulSoup
+            
+            if hasattr(file_obj, 'read'):
+                file_obj.seek(0)
+                eml_content = file_obj.read()
+            else:
+                with open(file_obj, 'rb') as f:
+                    eml_content = f.read()
+            
+            # Parse email
+            msg = email.message_from_bytes(eml_content, policy=policy.default)
+            
+            email_text = []
+            
+            # Extract email headers
+            email_text.append(f"From: {msg.get('from', 'Unknown')}")
+            email_text.append(f"To: {msg.get('to', 'Unknown')}")
+            email_text.append(f"Subject: {msg.get('subject', 'No Subject')}")
+            email_text.append(f"Date: {msg.get('date', 'Unknown')}")
+            email_text.append("---")
+            
+            # Extract email body
+            if msg.is_multipart():
+                for part in msg.walk():
+                    if part.get_content_maintype() == 'multipart':
+                        continue
+                    if part.get_content_maintype() == 'text':
+                        content = part.get_content()
+                        if part.get_content_subtype() == 'html':
+                            # Convert HTML to text
+                            soup = BeautifulSoup(content, 'html.parser')
+                            content = soup.get_text()
+                        email_text.append(content)
+            else:
+                content = msg.get_content()
+                if msg.get_content_subtype() == 'html':
+                    soup = BeautifulSoup(content, 'html.parser')
+                    content = soup.get_text()
+                email_text.append(content)
+            
+            return "\n".join(email_text)
+            
+        except ImportError as e:
+            logger.error(f"Required library not installed: {e}")
+            return ""
+        except Exception as e:
+            logger.error(f"EML extraction failed: {e}")
+            return ""
+
+    @staticmethod
+    def _extract_msg(file_obj: Any) -> str:
+        """Extract text from .msg files (Outlook message files)"""
+        try:
+            # For .msg files, we'll use a simple approach
+            # In production, you might want to use libraries like extract-msg
+            logger.warning(".msg file support is limited. Consider converting to .eml format.")
+            
+            if hasattr(file_obj, 'read'):
+                file_obj.seek(0)
+                content = file_obj.read()
+            else:
+                with open(file_obj, 'rb') as f:
+                    content = f.read()
+            
+            # Try to extract readable text from binary content
+            try:
+                return content.decode('utf-8', errors='ignore')
+            except:
+                return content.decode('latin-1', errors='ignore')
+                
+        except Exception as e:
+            logger.error(f"MSG extraction failed: {e}")
             return ""
 
     @staticmethod

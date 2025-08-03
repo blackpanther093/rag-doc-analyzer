@@ -137,15 +137,41 @@ class VectorStore:
     
     def get_retriever(self, session_id: str, k: int = 5):
         """Get retriever for specific session"""
-        if not self.store:
-            raise ValueError("Vector store not initialized")
-        
-        # Create retriever with session filter
-        retriever = self.store.as_retriever(
-            search_kwargs={
-                'k': k,
-                'filter': {'session_id': session_id}
-            }
-        )
-        
-        return retriever
+        try:
+            if not self.store:
+                logger.warning("Vector store not initialized, creating dummy retriever")
+                # Return a dummy retriever that returns empty results
+                from langchain.schema import BaseRetriever, Document
+                
+                class DummyRetriever(BaseRetriever):
+                    def get_relevant_documents(self, query: str):
+                        return []
+                    
+                    async def aget_relevant_documents(self, query: str):
+                        return []
+                
+                return DummyRetriever()
+            
+            # Create retriever with session filter
+            retriever = self.store.as_retriever(
+                search_kwargs={
+                    'k': k,
+                    'filter': {'session_id': session_id}
+                }
+            )
+            
+            return retriever
+            
+        except Exception as e:
+            logger.error(f"Failed to create retriever: {e}")
+            # Return a dummy retriever as fallback
+            from langchain.schema import BaseRetriever, Document
+            
+            class DummyRetriever(BaseRetriever):
+                def get_relevant_documents(self, query: str):
+                    return []
+                
+                async def aget_relevant_documents(self, query: str):
+                    return []
+            
+            return DummyRetriever()

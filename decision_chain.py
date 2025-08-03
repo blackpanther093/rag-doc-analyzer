@@ -24,10 +24,23 @@ class DecisionChain:
         return self.qa_chain.run(enriched_query, retriever, session_id)
 
     def _enrich_query(self, original: str, parsed: dict) -> str:
-        # Optionally embed structured data into question for LLM context
         additions = []
-        for k, v in parsed.items():
-            if v:
-                additions.append(f"{k.replace('_', ' ').title()}: {v}")
-        metadata_str = "\n".join(additions)
-        return f"{original}\n\n[Metadata]\n{metadata_str}"
+
+        if parsed.get("age") and parsed.get("gender"):
+            additions.append(f"I am a {parsed['age']}-year-old {parsed['gender'].lower()}.")
+        elif parsed.get("age"):
+            additions.append(f"I am {parsed['age']} years old.")
+        elif parsed.get("gender"):
+            additions.append(f"My gender is {parsed['gender'].lower()}.")
+
+        if parsed.get("procedure"):
+            additions.append(f"I am undergoing {parsed['procedure'].lower()}.")
+
+        if parsed.get("location"):
+            additions.append(f"The treatment is in {parsed['location']}.")
+
+        if parsed.get("policy_duration"):
+            additions.append(f"My policy has been active for {parsed['policy_duration']}.")
+
+        context_sentence = " ".join(additions)
+        return f"{original.strip()}\n\n{context_sentence.strip()}"
