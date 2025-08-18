@@ -44,8 +44,8 @@ A robust Document Q&A Assistant that uses Large Language Models (LLMs) to proces
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd hackrx_AI_rag
+   git clone https://github.com/blackpanther093/hackrx-rag-doc-analyzer
+   cd hackrx-rag-doc-analyzer
    ```
 
 2. **Install dependencies**
