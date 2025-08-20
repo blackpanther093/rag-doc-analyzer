@@ -44,7 +44,7 @@ A robust Document Q&A Assistant that uses Large Language Models (LLMs) to proces
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/blackpanther093/hackrx-rag-doc-analyzer
+   git clone https://github.com/blackpanther093/rag-doc-analyzer
    cd hackrx-rag-doc-analyzer
    ```
 
