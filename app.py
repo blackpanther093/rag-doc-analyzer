@@ -1,9 +1,9 @@
 import traceback
 import threading
-from setup_api import logger
-from app_state import app_state
-from interface import build_interface
-from api_endpoints import APIEndpoints
+from src.api.setup_api import logger
+from src.utils.app_state import app_state
+from src.interfaces.interface import build_interface
+from src.api.endpoints import APIEndpoints
 
 # -----------------------------
 # Main Application

@@ -25,4 +25,9 @@ Thumbs.db
 
 /logs/
 # Ignore local environment files
+/templates/
+/map.txt/
+/coreflow.txt/
+# ignore models files
+/models/
 .env
