@@ -13,7 +13,8 @@ groq==0.4.2
 huggingface-hub==0.19.4
 
 # Vector database
-pinecone-client==2.2.4
+# pinecone-client==2.2.4
+pinecone-client>=3.0.0,<4.0.0
 
 # Document processing
 PyPDF2==3.0.1
