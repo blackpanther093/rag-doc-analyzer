@@ -1,5 +1,6 @@
 import traceback
 import threading
+import os
 from src.api.setup_api import logger
 from src.utils.app_state import app_state
 from src.interfaces.interface import build_interface
@@ -59,7 +60,7 @@ def main():
         print("="*60 + "\n")
         
         interface.launch(
-            server_name="127.0.0.1",
+            server_name="0.0.0.0",
             server_port=port,
             share=False,
             debug=False,
