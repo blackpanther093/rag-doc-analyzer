@@ -21,7 +21,7 @@ def start_api_server():
         
         logger.info("API server starting on port 5000 (background)")
         # Run API server silently without showing Flask messages
-        api_endpoints.run(host="127.0.0.1", port=5000, debug=False)
+        api_endpoints.run(host="0.0.0.0", port=5000, debug=False)
     except Exception as e:
         logger.error(f"API server failed to start: {e}")
 
@@ -47,6 +47,7 @@ def main():
         interface = build_interface()
         
         logger.info("Launching Gradio interface...")
+        port = int(os.environ.get("PORT", 7860))
         print("\n" + "="*60)
         print("🚀 Document Q&A Assistant")
         print("="*60)
@@ -59,7 +60,7 @@ def main():
         
         interface.launch(
             server_name="127.0.0.1",
-            server_port=7860,
+            server_port=port,
             share=False,
             debug=False,
             show_error=True,
