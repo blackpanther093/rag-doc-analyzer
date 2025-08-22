@@ -59,5 +59,3 @@ python-dotenv==1.0.0
 
 # Utilities
 tqdm==4.66.1
-
-gunicorn
