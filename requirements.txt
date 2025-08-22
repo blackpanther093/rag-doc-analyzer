@@ -6,20 +6,23 @@ gradio==4.44.0
 # langchain-pinecone==0.0.1
 # langchain-core==0.1.10
 # langchain-huggingface==0.0.6
-langchain==0.2.11
-langchain-community==0.2.5
-langchain-groq==0.1.0
-langchain-pinecone==0.1.0
-langchain-core >=0.3.70
+langchain==0.3.27
+langchain-community==0.3.27
+langchain-groq==0.3.7
+langchain-pinecone==0.2.11
 langchain-huggingface==0.3.1
+# Do NOT pin langchain-core explicitly
 
 # LLM and AI
-groq==0.4.2
-huggingface-hub==0.19.4
+# groq==0.4.2
+# huggingface-hub==0.19.4
+groq>=0.29.0,<1.0.0
+huggingface-hub>=0.24.0,<1.0.0
+pinecone-client>=3.0.0,<4.0.0
 
 # Vector database
 # pinecone-client==2.2.4
-pinecone-client>=3.0.0,<4.0.0
+# pinecone-client>=3.0.0,<4.0.0
 
 # Document processing
 PyPDF2==3.0.1
@@ -32,14 +35,10 @@ beautifulsoup4==4.12.2
 email-validator==2.1.0
 
 # NLP and text processing
-spacy==3.7.2
-nltk==3.8.1
-
-# Enhanced features - Document Type Support
-python-docx==1.1.0
-docx2txt==0.8
-email-validator==2.1.0
-beautifulsoup4==4.12.2
+# spacy==3.7.2
+spacy==3.8.7
+# nltk==3.8.1
+nltk==3.9.1
 
 # Enhanced features - Consistency & Interpretability
 # (No additional dependencies needed - uses existing libraries)
