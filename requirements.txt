@@ -5,7 +5,8 @@ langchain-community==0.0.10
 langchain-groq==0.0.1
 langchain-pinecone==0.0.1
 langchain-core==0.1.10
-langchain-huggingface==0.0.6
+# langchain-huggingface==0.0.6
+langchain-huggingface==0.3.1
 
 # LLM and AI
 groq==0.4.2
