@@ -40,6 +40,8 @@ spacy==3.8.7
 # nltk==3.8.1
 nltk==3.9.1
 
+sentence-transformers==3.0.1
+
 # Enhanced features - Consistency & Interpretability
 # (No additional dependencies needed - uses existing libraries)
 
